@@ -1,0 +1,43 @@
+Quando você envia uma ordem do tipo FIX com a mensagem 35=D, 
+você está enviando uma mensagem de "New Order - Single", que é usada para 
+solicitar a criação de uma nova ordem de compra ou venda na bolsa (Exchange). 
+O fluxo básico funciona da seguinte maneira:
+
+1. Envio da Ordem (35=D):
+	Mensagem Enviada: 35=D (New Order - Single)
+	Conteúdo: A mensagem incluirá detalhes como o tipo de ordem (compra ou venda), quantidade, preço, símbolo do ativo, e outras informações relevantes.
+2. Recebimento e Validação pela Exchange:
+	Validação: A Exchange recebe a ordem e realiza uma série de validações, como verificar se os detalhes estão corretos, se há fundos suficientes, se o ativo é válido, etc.
+	Respostas Possíveis:
+	Execution Report (35=8): Se a ordem for aceita, a Exchange enviará um Execution Report com o OrdStatus igual a "New" (OrdStatus=0), indicando que a ordem foi registrada e está aguardando execução.
+	Reject (35=3): Se a ordem for rejeitada por algum motivo (por exemplo, erro no formato da mensagem ou falta de saldo), a Exchange enviará uma mensagem Reject com detalhes do erro.
+3. Processamento da Ordem:
+	Matching: Se a ordem for uma ordem de mercado ou tiver um preço que corresponda a outra ordem no livro de ofertas da Exchange, ela pode ser imediatamente executada (total ou parcialmente).
+	Respostas de Execução:
+	Execution Report (35=8): Se a ordem for executada (total ou parcialmente), a Exchange enviará um novo Execution Report com o OrdStatus atualizado, como "Partially Filled" (OrdStatus=1) ou "Filled" (OrdStatus=2).
+	Trade Capture Report (35=AE): Em alguns casos, a confirmação da transação também pode ser enviada como um Trade Capture Report.
+4. Encerramento ou Cancelamento:
+	Cancellation Request (35=F): Se desejar, o cliente pode enviar uma mensagem de cancelamento (35=F) para tentar cancelar a ordem antes que seja totalmente executada.
+	Response to Cancellation: A Exchange responderá com um Execution Report indicando o sucesso ou falha do cancelamento.
+	Resumo dos Principais Tipos de Resposta:
+	Execution Report (35=8): Fornece atualizações sobre o status da ordem.
+	Reject (35=3): Indica que a ordem foi rejeitada.
+	Order Cancel Reject (35=9): Se uma solicitação de cancelamento falhar.
+	
+Exemplo de Fluxo:
+Cliente -> Exchange:
+	8=FIX.4.2|9=176|35=D|49=CLIENT1|56=EXCHANGE1|34=4|52=20230831-12:30:00|11=12345|21=1|55=GOOG|54=1|38=100|40=2|44=1500.00|10=072|
+
+	
+Exchange -> Cliente:
+Ordem aceita:
+	8=FIX.4.2|9=146|35=8|49=EXCHANGE1|56=CLIENT1|34=5|52=20230831-12:30:01|11=12345|17=1|39=0|150=0|55=GOOG|54=1|38=100|44=1500.00|10=203|
+
+Ordem executada parcialmente:
+	8=FIX.4.2|9=156|35=8|49=EXCHANGE1|56=CLIENT1|34=6|52=20230831-12:30:02|11=12345|17=2|39=1|150=1|55=GOOG|54=1|38=100|32=50|31=1500.00|151=50|14=50|10=213|
+
+Ordem executada completamente:
+	8=FIX.4.2|9=156|35=8|49=EXCHANGE1|56=CLIENT1|34=7|52=20230831-12:30:03|11=12345|17=3|39=2|150=2|55=GOOG|54=1|38=100|32=100|31=1500.00|151=0|14=100|10=223|
+
+Esse fluxo pode variar ligeiramente dependendo da Exchange e dos parâmetros da ordem, 
+mas esses são os passos gerais em uma transação típica usando FIX.
