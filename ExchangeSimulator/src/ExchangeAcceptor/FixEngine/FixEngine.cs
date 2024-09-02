@@ -34,11 +34,13 @@
         public IObservable<Message> ExecutionReport { get { return _subjectExecutionReport; } }
         public IObservable<Message> BusinessMessageReject { get { return _subjectBusinessMessageReject; } }
 
-        public void FromAdmin(Message message, SessionID sessionID) {            
+        public void FromAdmin(Message message, SessionID sessionID) {
             var msgType = message.Header.GetField(new MsgType());
             switch (msgType.getValue()) {
                 case MsgType.HEARTBEAT:
-                    _log.Information($"HEARTBEAT: {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"HEARTBEAT: {message}");
+                    }
                     break;
                 default:
                     //_log.Information($"DEFAULT: {message}");
@@ -52,23 +54,33 @@
                 case MsgType.NEW_ORDER_D:
                     var book = new BooksDto(message, sessionID);
                     _subjectNewOrderSingle.OnNext(book);
-                    _log.Debug($"NEW_ORDER_D {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"NEW_ORDER_D {message}");
+                    }
                     break;
                 case MsgType.ORDER_CANCEL_REPLACE_REQUEST:
                     _subjectReplaceRequest.OnNext(message);
-                    _log.Debug($"ORDER_CANCEL_REPLACE_REQUEST {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"ORDER_CANCEL_REPLACE_REQUEST {message}");
+                    }
                     break;
                 case MsgType.ORDER_CANCEL_REJECT:
                     _subjectCancelRequest.OnNext(message);
-                    _log.Debug($"ORDER_CANCEL_REJECT {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"ORDER_CANCEL_REJECT {message}");
+                    }
                     break;
                 case MsgType.EXECUTION_REPORT:
                     _subjectExecutionReport.OnNext(message);
-                    _log.Debug($"EXECUTION_REPORT {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"EXECUTION_REPORT {message}");
+                    }
                     break;
                 case MsgType.BUSINESS_MESSAGE_REJECT:
                     _subjectBusinessMessageReject.OnNext(message);
-                    _log.Debug($"BUSINESS_MESSAGE_REJECT {message}");
+                    if (_log.IsEnabled(LogEventLevel.Debug)) {
+                        _log.Debug($"BUSINESS_MESSAGE_REJECT {message}");
+                    }
                     break;
                 default:
                     //_log.Information($"DEFAULT: {message}");
@@ -77,23 +89,33 @@
         }
 
         public void OnCreate(SessionID sessionID) {
-            _log.Information($"OnCreate Session {sessionID}");
+            if (_log.IsEnabled(LogEventLevel.Debug)) {
+                _log.Debug($"OnCreate Session {sessionID}");
+            }
         }
 
         public void OnLogon(SessionID sessionID) {
-            _log.Information($"OnLogon Session {sessionID}");
+            if (_log.IsEnabled(LogEventLevel.Debug)) {
+                _log.Debug($"OnLogon Session {sessionID}");
+            }
         }
 
         public void OnLogout(SessionID sessionID) {
-            _log.Information($"OnLogout Session {sessionID}");
+            if (_log.IsEnabled(LogEventLevel.Debug)) {
+                _log.Debug($"OnLogout Session {sessionID}");
+            }
         }
 
         public void ToAdmin(Message message, SessionID sessionID) {
-            _log.Information($"ToAdmin Message {message} | Session {sessionID}");
+            if (_log.IsEnabled(LogEventLevel.Debug)) {
+                _log.Debug($"ToAdmin Message {message} | Session {sessionID}");
+            }
         }
 
         public void ToApp(Message message, SessionID sessionID) {
-            _log.Information($"ToApp Message {message} | Session {sessionID}");
-        }        
+            if (_log.IsEnabled(LogEventLevel.Debug)) {
+                _log.Debug($"ToApp Message {message} | Session {sessionID}");
+            }
+        }
     }
 }

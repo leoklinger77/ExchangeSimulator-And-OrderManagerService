@@ -1,5 +1,5 @@
 ﻿namespace ExchangeAcceptor {
-    using ExchangeAcceptor.Exchange;
+    using ExchangeAcceptor.Engine;
     using ExchangeAcceptor.FixEngine;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -13,7 +13,8 @@
         }
 
         private static IHost Configuration(HostApplicationBuilder builder) {            
-            builder.Services.AddScoped<OrderBookManager>();
+            builder.Services.AddSingleton<MarketDataManager>();
+            builder.Services.AddSingleton<OrderBookManager>();
 
             builder.Services.AddHostedService<AcceptorFix>();
             return builder.Build();

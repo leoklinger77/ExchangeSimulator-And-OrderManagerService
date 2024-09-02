@@ -18,16 +18,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Update="Config\OmsAcceptorSettings.cfg">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Config\B3InitiatorSettings.cfg">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
 	  <None Update="Config\FIX44.xml">
 	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	  </None>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="EngineAcceptor\" />
 	</ItemGroup>
 
 </Project>

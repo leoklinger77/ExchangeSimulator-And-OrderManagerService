@@ -25,7 +25,7 @@
     <None Update="Config\FIX44.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Config\SymbolsConfig.json">
+    <None Update="Config\Instrument.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

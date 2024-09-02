@@ -17,7 +17,7 @@
         }
 
         public void FromApp(Message message, SessionID sessionID) {
-            _log.Information($"FromApp Message {message} | Session {sessionID}");
+            //_log.Information($"FromApp Message {message} | Session {sessionID}");
         }
 
         public void OnCreate(SessionID sessionID) {
@@ -33,11 +33,11 @@
         }
 
         public void ToAdmin(Message message, SessionID sessionID) {
-            _log.Information($"ToAdmin Message {message} | Session {sessionID}");
+            //_log.Information($"ToAdmin Message {message} | Session {sessionID}");
         }
 
         public void ToApp(Message message, SessionID sessionID) {
-            _log.Information($"ToApp Message {message} | Session {sessionID}");
+            //_log.Information($"ToApp Message {message} | Session {sessionID}");
         }
     }
 }

@@ -6,6 +6,7 @@
     using QuickFix.FIX44;
     using QuickFix.Transport;
     using Serilog;
+    using System.Diagnostics;
     using System.Drawing;
 
     public class B3ExchangeConnector : BackgroundService {
@@ -41,17 +42,24 @@
 
         private void Test() {
             var rand = new Random();
-            var symbols = new string[] { "PETR4", "VALE3" };
+            var symbols = new string[] { "PETR4", "VALE3", "PRIO3", "OIBR3" };
             var qty = new int[] { 100, 500, 1000 };
             do {
-                Console.ReadKey();
-                for (int i = 0; i < 1; i++) {
-                    var symbol = symbols[rand.Next(0, symbols.Length - 1)];                    
-                    SendOrder(Side.BUY, symbol, qty[rand.Next(0, qty.Length - 1)], new Faker().Random.Decimal(10.00m, 15.00m));
-                    SendOrder(Side.SELL, symbol, qty[rand.Next(0, qty.Length - 1)], new Faker().Random.Decimal(10.00m, 15.00m));
+                //Console.ReadKey();
+                Console.Write("Quantidade a ser enviado: ");
+                var read = Console.ReadLine(); ;
+                int.TryParse(read, out int totalSend);
+                var sw = Stopwatch.StartNew();
+                for (int i = 0; i < totalSend; i++) {
+                    var symbol = symbols[rand.Next(0, symbols.Length)];
+                    SendOrder(Side.BUY, symbol, qty[rand.Next(0, qty.Length)], new Faker().Random.Decimal(10.00m, 15.00m));
+                    SendOrder(Side.SELL, symbol, qty[rand.Next(0, qty.Length)], new Faker().Random.Decimal(10.00m, 15.00m));
                 }
+                sw.Stop();
+                Console.WriteLine($"TotalMilliseconds {sw.Elapsed.TotalMilliseconds}");
             } while (true);
         }
+
 
         public void SendOrder(char side, string symbol, int qty, decimal price) {
             QuickFix.Message message = new NewOrderSingle();
@@ -67,8 +75,7 @@
             message.SetField(new Price(price));
             message.SetField(new TimeInForce(TimeInForce.DAY));
             try {
-                Session.SendToTarget(message, _session.First());
-                _log.Information("Order sent successfully.");
+                Session.SendToTarget(message, _session.First());                
             } catch (Exception ex) {
                 _log.Error("Failed to send order: " + ex.Message);
             }

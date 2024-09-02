@@ -1,13 +1,17 @@
-﻿namespace ExchangeAcceptor.Exchange {
+﻿namespace ExchangeAcceptor.Engine {
     using ExchangeAcceptor.Entities;
     using ExchangeAcceptor.FixEngine;
     using QuickFix;
     using QuickFix.Fields;
 
     public class OrderBookManager {
+        private readonly MarketDataManager _marketDataManager;
         private IDictionary<string, OrderBook> _manager = new Dictionary<string, OrderBook>();
         private IFixEngine _fixEngine;
-
+        public OrderBookManager(MarketDataManager marketDataManager) {
+            _marketDataManager = marketDataManager;
+            _marketDataManager.Initialize();
+        }
         public void Initialize(IFixEngine fixEngine) {
             _fixEngine = fixEngine;
 
@@ -22,7 +26,7 @@
                 if (_manager.TryGetValue(order.Symbol, out var manager)) {
                     manager.AddOrder(order);
                 } else {
-                    _manager.Add(order.Symbol, new OrderBook(order.Symbol));
+                    _manager.Add(order.Symbol, new OrderBook(order.Symbol, _marketDataManager));
                 }
             });
         }
